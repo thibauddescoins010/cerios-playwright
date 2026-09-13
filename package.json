@@ -1,0 +1,20 @@
+{
+  "name": "cerios-playwright-study",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cerios Playwright TypeScript test automation study case",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui --project=chromium",
+    "test:api": "playwright test tests/api --project=api --reporter=list",
+    "test:headed": "playwright test tests/ui --project=chromium --headed",
+    "test:debug": "playwright test tests/ui --project=chromium --debug",
+    "test:typecheck": "tsc --noEmit",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}
