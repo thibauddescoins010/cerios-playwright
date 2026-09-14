@@ -5,6 +5,10 @@ import { cents } from './utils/network';
 export class CartPage extends BasePage {
   readonly proceedToCheckoutButton: Locator;
   readonly cartTotal: Locator;
+  readonly cartItemRows: Locator;
+  readonly productTitleSelector: string;
+  readonly productQuantitySelector: string;
+  readonly linePriceSelector: string;
 
   constructor(page: Page) {
     super(page);
@@ -15,6 +19,10 @@ export class CartPage extends BasePage {
       .first();
 
     this.cartTotal = page.locator('[data-test="cart-total"]');
+    this.cartItemRows = page.locator('tr, [data-test="cart-item"]');
+    this.productTitleSelector = '[data-test="product-title"]';
+    this.productQuantitySelector = '[data-test="product-quantity"]';
+    this.linePriceSelector = '[data-test="line-price"]';
   }
 
   async open(): Promise<void> {
@@ -24,14 +32,17 @@ export class CartPage extends BasePage {
   }
 
   productRow(productName: string): Locator {
-    return this.page
-      .locator('tr, [data-test="cart-item"]')
-      .filter({
-        has: this.page.locator('[data-test="product-title"]').filter({
-          hasText: new RegExp(`^${productName}\\s*$`),
-        }),
-      })
+    return this.cartItemRows
+      .filter({ has: this.page.locator(this.productTitleSelector, { hasText: new RegExp(`^${this.escapeForRegex(productName)}\\s*$`) }) })
       .first();
+  }
+
+  productQuantityInput(productName: string): Locator {
+    return this.productRow(productName).locator(this.productQuantitySelector);
+  }
+
+  productLinePrice(productName: string): Locator {
+    return this.productRow(productName).locator(this.linePriceSelector);
   }
 
   async expectProductInCart(productName: string): Promise<void> {
@@ -41,15 +52,13 @@ export class CartPage extends BasePage {
   }
 
   async expectRowQuantity(productName: string, quantity: number): Promise<void> {
-    const row = this.productRow(productName);
-    await expect(row.locator('[data-test="product-quantity"]')).toHaveValue(String(quantity));
+    await expect(this.productQuantityInput(productName)).toHaveValue(String(quantity));
   }
 
   async expectRowLinePrice(productName: string, unitPriceCents: number, quantity: number): Promise<void> {
-    const row = this.productRow(productName);
     const expectedLineCents = unitPriceCents * quantity;
     await expect.poll(async () =>
-      cents(await row.locator('[data-test="line-price"]').innerText()),
+      cents(await this.productLinePrice(productName).innerText()),
     ).toBe(expectedLineCents);
   }
 
@@ -61,5 +70,9 @@ export class CartPage extends BasePage {
 
   async proceedToCheckout(): Promise<void> {
     await this.proceedToCheckoutButton.click();
+  }
+
+  private escapeForRegex(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }
