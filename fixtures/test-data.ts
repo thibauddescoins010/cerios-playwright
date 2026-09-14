@@ -3,6 +3,7 @@ import type { RegistrationData } from '../pages/auth.page';
 export const catalogData = {
   searchTerm: 'Pliers',
   expectedProduct: 'Combination Pliers',
+  outOfStockProduct: 'Long Nose Pliers',
   category: 'Hammer',
   categoryProduct: 'Thor Hammer',
 };

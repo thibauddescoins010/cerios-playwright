@@ -28,4 +28,28 @@ test.describe('Shopping cart', () => {
       await expect(cartPage.proceedToCheckoutButton).toBeVisible();
     });
   });
+
+  test('user cannot order an out-of-stock product (regression)', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const productPage = new ProductPage(page);
+
+    await test.step('Open an out-of-stock product', async () => {
+      await homePage.open();
+      await homePage.searchFor(catalogData.outOfStockProduct);
+      await homePage.openProduct(catalogData.outOfStockProduct);
+      await productPage.expectProductName(catalogData.outOfStockProduct);
+    });
+
+    await test.step('Verify product cannot be ordered', async () => {
+      const buttonText = (await productPage.addToCartButton.innerText()).trim();
+      const isDisabled = await productPage.addToCartButton.isDisabled();
+      const hasOutOfStockLabel = /out of stock/i.test(buttonText);
+      const hasBlockedPurchaseState = isDisabled || hasOutOfStockLabel;
+
+      expect(
+        hasBlockedPurchaseState,
+        `Expected blocked purchase for out-of-stock product "${catalogData.outOfStockProduct}", got disabled=${isDisabled}, buttonText="${buttonText}"`,
+      ).toBeTruthy();
+    });
+  });
 });
