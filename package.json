@@ -6,6 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test tests/ui --project=chromium",
+    "test:integration": "playwright test tests/integration --project=integration --reporter=list",
     "test:api": "playwright test tests/api --project=api --reporter=list",
     "test:headed": "playwright test tests/ui --project=chromium --headed",
     "test:debug": "playwright test tests/ui --project=chromium --debug",

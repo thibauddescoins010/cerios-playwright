@@ -5,6 +5,7 @@ export interface RegistrationData {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
+  houseNumber: string;
   street: string;
   postalCode: string;
   city: string;
@@ -21,6 +22,7 @@ export class AuthPage extends BasePage {
   readonly dateOfBirthInput: Locator;
   readonly streetInput: Locator;
   readonly postalCodeInput: Locator;
+  readonly houseNumberInput: Locator;
   readonly cityInput: Locator;
   readonly stateInput: Locator;
   readonly countrySelect: Locator;
@@ -37,6 +39,7 @@ export class AuthPage extends BasePage {
     this.dateOfBirthInput = page.locator('[data-test="dob"]');
     this.streetInput = page.locator('[data-test="street"]');
     this.postalCodeInput = page.locator('[data-test="postal_code"]');
+    this.houseNumberInput = page.locator('[data-test="house_number"]');
     this.cityInput = page.locator('[data-test="city"]');
     this.stateInput = page.locator('[data-test="state"]');
     this.countrySelect = page.locator('[data-test="country"]');
@@ -57,11 +60,15 @@ export class AuthPage extends BasePage {
     await this.firstNameInput.fill(data.firstName);
     await this.lastNameInput.fill(data.lastName);
     await this.dateOfBirthInput.fill(data.dateOfBirth);
-    await this.streetInput.fill(data.street);
+    await this.countrySelect.waitFor({ state: 'visible' });
+    await this.countrySelect.selectOption(data.country);
+    await expect(this.countrySelect).toHaveValue(data.country);
     await this.postalCodeInput.fill(data.postalCode);
+    await this.houseNumberInput.fill(data.houseNumber);
+    await this.houseNumberInput.blur();
+    await this.streetInput.fill(data.street);
     await this.cityInput.fill(data.city);
     await this.stateInput.fill(data.state);
-    await this.countrySelect.selectOption({ label: data.country });
     await this.phoneInput.fill(data.phone);
     await this.emailInput.fill(data.email);
     await this.passwordInput.fill(data.password);

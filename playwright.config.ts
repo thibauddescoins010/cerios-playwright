@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { BASE_URLS } from './fixtures/base-urls';
 
 export default defineConfig({
   testDir: './tests',
@@ -26,7 +27,7 @@ export default defineConfig({
       testMatch: '**/api/catalog.api.spec.ts',
       use: {
         browserName: 'chromium',
-        baseURL: 'https://api.practicesoftwaretesting.com',
+        baseURL: BASE_URLS.toolshopApi,
       },
     },
     {
@@ -34,7 +35,7 @@ export default defineConfig({
       testMatch: '**/api/weather.api.spec.ts',
       use: {
         browserName: 'chromium',
-        baseURL: 'https://api.openweathermap.org',
+        baseURL: BASE_URLS.openWeather,
       },
     },
     {
@@ -42,7 +43,7 @@ export default defineConfig({
       testMatch: '**/api/tvmaze.api.spec.ts',
       use: {
         browserName: 'chromium',
-        baseURL: 'https://api.tvmaze.com',
+        baseURL: BASE_URLS.tvMaze,
       },
     },
     {
@@ -50,7 +51,15 @@ export default defineConfig({
       testMatch: '**/ui/**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'https://practicesoftwaretesting.com',
+        baseURL: BASE_URLS.toolshop,
+      },
+    },
+    {
+      name: 'integration',
+      testMatch: '**/integration/**/*.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: BASE_URLS.toolshop,
       },
     },
   ],

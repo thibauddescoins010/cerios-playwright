@@ -5,6 +5,7 @@ import { HeaderComponent } from './components/header.component';
 export class HomePage extends BasePage {
   readonly header: HeaderComponent;
   readonly sortSelect: Locator;
+  readonly productNames: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -12,6 +13,7 @@ export class HomePage extends BasePage {
     this.sortSelect = page
       .locator('[data-test="sort"], select')
       .first();
+    this.productNames = page.locator('[data-test="product-name"]');
   }
 
   async open(): Promise<void> {
@@ -21,7 +23,9 @@ export class HomePage extends BasePage {
   }
 
   productByName(name: string): Locator {
-    return this.page.getByText(name, { exact: false }).first();
+    return this.productNames
+      .getByText(name, { exact: true })
+      .first();
   }
 
   categoryCheckbox(category: string): Locator {
